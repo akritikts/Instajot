@@ -3,12 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#f9f9b1">
+    android:background="#ffffff">
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="370dp"
-        android:src="@drawable/src"/>
-    <TextView
+        android:layout_height="match_parent"
+        android:src="@drawable/splash"/>
+    <!--<TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="InstaJot"
@@ -17,6 +17,6 @@
         android:layout_gravity="bottom"
         android:gravity="center"
         android:textSize="35dp"
-        android:textColor="#640202"/>
+        android:textColor="#640202"/>-->
 
 </LinearLayout>

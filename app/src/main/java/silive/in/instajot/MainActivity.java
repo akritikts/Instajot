@@ -13,7 +13,7 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public Intent i;
-    Button startService, stopService;
+    Button startService, stopService,msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +25,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         startService.setOnClickListener(this);
         stopService = (Button) findViewById(R.id.stop);
         stopService.setOnClickListener(this);
+        msg =(Button)findViewById(R.id.msg);
+        msg.setOnClickListener(this);
     }
 
     @Override
@@ -33,6 +35,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startService(i);
         if (v.getId() == R.id.stop)
             stopService(i);
+        if (v.getId()==R.id.msg){
+            Intent m = new Intent(this,Overview.class);
+            startActivity(m);
+        }
     }
     public  void fun(){
        // Intent intent = new Intent(this,Head.class);

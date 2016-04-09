@@ -3,6 +3,7 @@ package silive.in.instajot;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.DisplayMetrics;
@@ -11,6 +12,9 @@ import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 /**
@@ -20,6 +24,7 @@ public class Head extends Service{
     WindowManager.LayoutParams params;
     private WindowManager windowManager;
     private ImageView chatHead;
+    View mView;
 
 
     @Override
@@ -27,7 +32,7 @@ public class Head extends Service{
         super.onCreate();
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         chatHead = new ImageView(this);
-        chatHead.setImageResource(R.mipmap.ic_launcher);
+        chatHead.setImageResource(R.drawable.ic_launcher);
 
 
 
@@ -65,7 +70,25 @@ public class Head extends Service{
                         initialTouchY = event.getRawY();
                         return true;
                     case MotionEvent.ACTION_UP:
-
+                        Log.d("Chat","up");
+                        mView = View.inflate(getApplicationContext(), R.layout.overview,null);
+                        mView.setTag("TAG");
+                        Log.d("Chat", "up");
+                        int top = getApplicationContext().getResources().getDisplayMetrics().heightPixels / 2;
+                        //final EditText etMassage = (EditText) mView.findViewById(R.id.text);
+                        Button ButtonSend = (Button) mView.findViewById(R.id.button);
+                        ButtonSend.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                //Utils.printLog("clicked");
+                /*mView.setVisibility(View.GONE);
+                                if(!etMassage.getText().toString().equals(""))
+                                {
+                                    //Utils.printLog("sent");
+                                    etMassage.setText("");
+                                }*/
+                            }
+                        });
                         return true;
                     case MotionEvent.ACTION_MOVE:
                         params.x = initialX
@@ -87,6 +110,17 @@ public class Head extends Service{
         windowManager.addView(chatHead, params);
 
     }
+    private void hideDialog(){
+        if(mView != null && windowManager != null){//private void hideDialog();{
+        if(mView != null && windowManager != null){
+            windowManager.removeView(mView);
+            mView = null;
+        }
+    }
+            windowManager.removeView(mView);
+            mView = null;
+        }
+    
 
     @Override
     public void onDestroy() {
@@ -100,6 +134,23 @@ public class Head extends Service{
     public IBinder onBind(Intent intent) {
         return null;
     }
+    /*Intent intent = new Intent(Intent.ACTION_VIEW);
+
+    intent.setDataAndType(uri, "video/mp4");*/
+    /*public void onClick(View arg0) {
+        // TODO Auto-generated method stub
+        String uriString = inputUri.getText().toString();
+        Uri intentUri = Uri.parse(uriString);
+
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
+        intent.setData(intentUri);
+
+        startActivity(intent);
+
+    }});
+
+        }*/
 }
 
 
