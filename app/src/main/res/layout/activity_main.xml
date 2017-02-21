@@ -7,9 +7,40 @@
     android:fitsSystemWindows="true"
     tools:context="silive.in.instajot.MainActivity">
 
+    <Button
+        android:id="@+id/start"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Head"
+        android:background="#00a651"
+        android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:textColor="#ffffff"
+        android:textSize="20dp"/>
 
+    <Button
+        android:id="@+id/stop"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop Head"
+        android:background="#00a651"
+        android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:textColor="#ffffff"
+        android:textSize="20dp"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Message"
+        android:id="@+id/msg"
+        android:layout_gravity="center"
+        android:layout_margin="60dp"
+        android:textColor="#ffffff"
+        android:background="#00a651"/>
 
-    <include layout="@layout/content_main" />
+    <!--<include layout="@layout/content_main" />-->
 
 
 
