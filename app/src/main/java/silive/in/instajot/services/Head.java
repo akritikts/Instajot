@@ -1,4 +1,4 @@
-package silive.in.instajot;
+package silive.in.instajot.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -11,6 +11,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+
+import silive.in.instajot.R;
+import silive.in.instajot.activities.MainActivity;
 
 /**
  * Created by akriti on 8/4/16.

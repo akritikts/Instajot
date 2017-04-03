@@ -1,4 +1,4 @@
-package silive.in.instajot;
+package silive.in.instajot.activities;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import java.io.File;
 import java.io.IOException;
+
+import silive.in.instajot.R;
 
 /**
  * Created by akriti on 9/4/16.
