@@ -7,6 +7,16 @@
     android:fitsSystemWindows="true"
     tools:context="silive.in.instajot.activities.MainActivity"
     android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:layout_margin="10dp"
+        android:textColor="#028c45"
+        android:textSize="20sp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:text="Take notes and save audio or video clips instantly.\nClick the Start Head button to begin."/>
 
     <Button
         android:id="@+id/start"
@@ -31,15 +41,18 @@
         android:textAllCaps="true"
         android:textColor="#ffffff"
         android:textSize="20dp"/>
+
     <Button
+        android:id="@+id/msg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Jot"
-        android:id="@+id/msg"
         android:layout_gravity="center"
-        android:layout_margin="60dp"
-        android:textColor="#ffffff"
-        android:background="#00a651"/>
+        android:background="#00a651"
+        android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:textAllCaps="true"
+        android:text="Jot"
+        android:textColor="#ffffff" />
 
     <!--<include layout="@layout/content_main" />-->
 

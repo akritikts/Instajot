@@ -24,9 +24,11 @@ import silive.in.instajot.R;
  * Created by akriti on 9/4/16.
  */
 public class Overview extends AppCompatActivity implements View.OnClickListener{
-    Button button;
-    Button text;
+    public static Button button;
+    public static Button record_audio,save_text;
+    public static EditText msg_text;
     File audiofile = null;
+    public static int flag = 1;
     MediaRecorder recorder;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,15 +36,18 @@ public class Overview extends AppCompatActivity implements View.OnClickListener{
         setContentView(R.layout.overview);
         button = (Button)findViewById(R.id.button);
         button.setOnClickListener(this);
-        text = (Button)findViewById(R.id.text);
-        text.setOnClickListener(this);
+        msg_text = (EditText)findViewById(R.id.msg_text);
+        save_text = (Button)findViewById(R.id.save_text);
+        record_audio = (Button)findViewById(R.id.rec_audio);
+        record_audio.setOnClickListener(this);
         button.setEnabled(false);
     }
 
     @Override
     public void onClick(View v) {
-        if (v.getId()==R.id.text){
-            text.setEnabled(false);
+        if (v.getId()==R.id.rec_audio){
+            flag = 2;
+            record_audio.setEnabled(false);
             button.setEnabled(true);
 
             File sampleDir = Environment.getExternalStorageDirectory();
@@ -67,21 +72,32 @@ public class Overview extends AppCompatActivity implements View.OnClickListener{
 
         }
         if (v.getId()==R.id.button){
+            if (flag==2){
+                ContentValues values = new ContentValues(4);
+                long current = System.currentTimeMillis();
+                values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
+                values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
+                values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp");
+                values.put(MediaStore.Audio.Media.DATA, audiofile.getAbsolutePath());
+                ContentResolver contentResolver = getContentResolver();
+
+                Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                Uri newUri = contentResolver.insert(base, values);
+
+                sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
+                Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
+            }
+            else {
+                msg_text.setVisibility(View.GONE);
+                Toast.makeText(this, "Added File ", Toast.LENGTH_LONG).show();
+            }
 
 
-            ContentValues values = new ContentValues(4);
-            long current = System.currentTimeMillis();
-            values.put(MediaStore.Audio.Media.TITLE, "audio" + audiofile.getName());
-            values.put(MediaStore.Audio.Media.DATE_ADDED, (int) (current / 1000));
-            values.put(MediaStore.Audio.Media.MIME_TYPE, "audio/3gpp");
-            values.put(MediaStore.Audio.Media.DATA, audiofile.getAbsolutePath());
-            ContentResolver contentResolver = getContentResolver();
 
-            Uri base = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-            Uri newUri = contentResolver.insert(base, values);
-
-            sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, newUri));
-            Toast.makeText(this, "Added File " + newUri, Toast.LENGTH_LONG).show();
+            }
+            if (v.getId()==R.id.save_text){
+                flag = 1;
+                msg_text.setVisibility(View.VISIBLE);
             }
 
     }

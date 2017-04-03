@@ -6,16 +6,30 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/text"
+        android:id="@+id/save_text"
         android:textColor="#ffffff"
         android:background="#00a651"
-        android:text="Your message"
+        android:text="Enter your message"
+        android:layout_margin="10dp"/>
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/msg_text"
+        android:visibility="gone"
+        android:hint="Enter text here"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rec_audio"
+        android:textColor="#ffffff"
+        android:background="#00a651"
+        android:text="Record your message"
         android:layout_margin="10dp"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button"
-        android:text="OK"
+        android:text="Done"
         android:textColor="#ffffff"
         android:layout_margin="10dp"
         android:layout_gravity="center"
