@@ -3,18 +3,13 @@ package silive.in.instajot;
 import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
-import android.net.Uri;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 /**
@@ -22,111 +17,139 @@ import android.widget.ImageView;
  */
 public class Head extends Service{
     WindowManager.LayoutParams params;
-    private WindowManager windowManager;
+    private WindowManager mWindowManager;
     private ImageView chatHead;
-    View mView;
+    private View mfloatingHeadView;
 
+    public Head() {
+    }
 
     @Override
     public void onCreate() {
         super.onCreate();
-        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        chatHead = new ImageView(this);
-        chatHead.setImageResource(R.drawable.ic_launcher);
+        mfloatingHeadView = LayoutInflater.from(this).inflate(R.layout.floating_head_view,null);
 
-
-
-
-
-        params = new WindowManager.LayoutParams(
+        final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.WRAP_CONTENT,
                 WindowManager.LayoutParams.TYPE_PHONE,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT);
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        windowManager.getDefaultDisplay().getMetrics(displaymetrics);
-        final int height = displaymetrics.heightPixels;
-        int width = displaymetrics.widthPixels;
-
         params.gravity = Gravity.TOP | Gravity.LEFT;
         params.x = 0;
         params.y = 100;
+        mWindowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
+        mWindowManager.addView(mfloatingHeadView, params);
+
+        final View collapsedView = mfloatingHeadView.findViewById(R.id.collapse_view);
+        final View expandedView = mfloatingHeadView.findViewById(R.id.expanded_container);
+        ImageView closeButtonCollapsed = (ImageView) mfloatingHeadView.findViewById(R.id.close_btn);
+        closeButtonCollapsed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                stopSelf();
+            }
+        });
+        ImageView saveText = (ImageView) mfloatingHeadView.findViewById(R.id.text_btn);
+        saveText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        ImageView recordAudio = (ImageView) mfloatingHeadView.findViewById(R.id.audio_btn);
+        recordAudio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+        ImageView closeButton = (ImageView) mfloatingHeadView.findViewById(R.id.close_button);
+        closeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                collapsedView.setVisibility(View.VISIBLE);
+                expandedView.setVisibility(View.GONE);
+            }
+        });
+        ImageView openButton = (ImageView) mfloatingHeadView.findViewById(R.id.open_button);
+        openButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Open the application  click.
+                Intent intent = new Intent(Head.this, MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
 
 
-        chatHead.setOnTouchListener(new View.OnTouchListener() {
+                //close the service and remove view from the view hierarchy
+                stopSelf();
+            }
+        });
+
+        mfloatingHeadView.findViewById(R.id.root_container).setOnTouchListener(new View.OnTouchListener() {
             private int initialX;
             private int initialY;
             private float initialTouchX;
             private float initialTouchY;
 
+
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
+
+                        //the initial position.
                         initialX = params.x;
                         initialY = params.y;
+
+                        //the touch location
                         initialTouchX = event.getRawX();
                         initialTouchY = event.getRawY();
                         return true;
                     case MotionEvent.ACTION_UP:
-                        Log.d("Chat","up");
-                        mView = View.inflate(getApplicationContext(), R.layout.overview,null);
-                        mView.setTag("TAG");
-                        Log.d("Chat", "up");
-                        int top = getApplicationContext().getResources().getDisplayMetrics().heightPixels / 2;
-                        //final EditText etMassage = (EditText) mView.findViewById(R.id.text);
-                        Button ButtonSend = (Button) mView.findViewById(R.id.button);
-                        ButtonSend.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                //Utils.printLog("clicked");
-                /*mView.setVisibility(View.GONE);
-                                if(!etMassage.getText().toString().equals(""))
-                                {
-                                    //Utils.printLog("sent");
-                                    etMassage.setText("");
-                                }*/
+                        int Xdiff = (int) (event.getRawX() - initialTouchX);
+                        int Ydiff = (int) (event.getRawY() - initialTouchY);
+
+
+
+                        if (Xdiff < 10 && Ydiff < 10) {
+                            if (isViewCollapsed()) {
+                                //When user clicks on the image view of the collapsed layout,
+                                //visibility of the collapsed layout will be changed to "View.GONE"
+                                //and expanded view will become visible.
+                                collapsedView.setVisibility(View.GONE);
+                                expandedView.setVisibility(View.VISIBLE);
                             }
-                        });
+                        }
                         return true;
                     case MotionEvent.ACTION_MOVE:
-                        params.x = initialX
-                                + (int) (event.getRawX() - initialTouchX);
-                        params.y = initialY
-                                + (int) (event.getRawY() - initialTouchY);
-                        /*if (params.y <= (height/5)) {
+                        //Calculate the X and Y coordinates of the view.
+                        params.x = initialX + (int) (event.getRawX() - initialTouchX);
+                        params.y = initialY + (int) (event.getRawY() - initialTouchY);
 
 
-                            Log.d("Chat", "gone");
-
-                        } else*/
-                            windowManager.updateViewLayout(chatHead, params);
+                        //Update the layout with new X & Y coordinate
+                        mWindowManager.updateViewLayout(mfloatingHeadView, params);
                         return true;
                 }
                 return false;
             }
         });
-        windowManager.addView(chatHead, params);
+    }
 
+
+    private boolean isViewCollapsed() {
+        return mfloatingHeadView == null || mfloatingHeadView.findViewById(R.id.collapse_view).getVisibility() == View.VISIBLE;
     }
-    private void hideDialog(){
-        if(mView != null && windowManager != null){//private void hideDialog();{
-        if(mView != null && windowManager != null){
-            windowManager.removeView(mView);
-            mView = null;
-        }
-    }
-            windowManager.removeView(mView);
-            mView = null;
-        }
+
     
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (chatHead != null)
-            windowManager.removeView(chatHead);
+        if (mfloatingHeadView != null)
+            mWindowManager.removeView(mfloatingHeadView);
     }
 
     @Nullable
@@ -134,23 +157,7 @@ public class Head extends Service{
     public IBinder onBind(Intent intent) {
         return null;
     }
-    /*Intent intent = new Intent(Intent.ACTION_VIEW);
 
-    intent.setDataAndType(uri, "video/mp4");*/
-    /*public void onClick(View arg0) {
-        // TODO Auto-generated method stub
-        String uriString = inputUri.getText().toString();
-        Uri intentUri = Uri.parse(uriString);
-
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setData(intentUri);
-
-        startActivity(intent);
-
-    }});
-
-        }*/
 }
 
 
