@@ -16,7 +16,10 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 
 import silive.in.instajot.R;
 
@@ -90,6 +93,12 @@ public class Overview extends AppCompatActivity implements View.OnClickListener{
             else {
                 msg_text.setVisibility(View.GONE);
                 Toast.makeText(this, "Added File ", Toast.LENGTH_LONG).show();
+                if(checkExternalMedia()){
+                    writeToSDFile();
+                }
+                else
+                    Toast.makeText(this, "Ext storage unavailable ", Toast.LENGTH_LONG).show();
+
             }
 
 
@@ -98,7 +107,51 @@ public class Overview extends AppCompatActivity implements View.OnClickListener{
             if (v.getId()==R.id.save_text){
                 flag = 1;
                 msg_text.setVisibility(View.VISIBLE);
+                Log.d("TAG","msg space");
             }
 
     }
+    private boolean checkExternalMedia(){
+        boolean mExternalStorageAvailable = false;
+        boolean mExternalStorageWriteable = false;
+        String state = Environment.getExternalStorageState();
+
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+
+        } else return false;
+        }
+    private void writeToSDFile(){
+
+        // Find the root of the external storage.
+        // See http://developer.android.com/guide/topics/data/data-  storage.html#filesExternal
+
+        File root = android.os.Environment.getExternalStorageDirectory();
+
+
+        // See http://stackoverflow.com/questions/3551821/android-write-to-sd-card-folder
+
+        File dir = new File (root.getAbsolutePath() + "/download");
+        dir.mkdirs();
+        File file = new File(dir, "myData.txt");
+
+        try {
+            FileOutputStream f = new FileOutputStream(file);
+            PrintWriter pw = new PrintWriter(f);
+            pw.println("Hi , How are you");
+            pw.println("Hello");
+            pw.flush();
+            pw.close();
+            f.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            Log.i("TAG", "******* File not found. Did you" +
+                    " add a WRITE_EXTERNAL_STORAGE permission to the   manifest?");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }
